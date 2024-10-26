@@ -4,7 +4,7 @@ import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
 function Landing() {
   return (
     <>
-      <div className=' p-10 grid grid-cols-[repeat(1,2fr_2fr)]'>
+      <div className=' md:p-10 p-5 md:grid grid-cols-[repeat(1,2fr_2fr)]'>
       <div className='flex flex-col justify-center  '>
         <h1 className='text-3xl mb-3 font-[550] text-[#46c6df] '>Effortless Hostel Management, All in One Place</h1>
         <p className='text-xl font-[300]' >Streamline your hostel operations with our intuitive and user-friendly platform. From room assignments to payments, manage it all with ease.</p>
