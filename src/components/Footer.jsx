@@ -26,7 +26,7 @@ function Footer() {
             <div>
                 <h1 className='text-2xl text-white '>Guides</h1>
                     <p className=' mt-3'>React</p>
-                    <p className=' mt-3'>React Boottrap</p>
+                    <p className=' mt-3'>React Bootstrap</p>
                     <p className=' mt-3'>Bootswatch</p>
             </div>
             </div>
