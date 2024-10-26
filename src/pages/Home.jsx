@@ -3,7 +3,7 @@ import React from 'react'
 function Home() {
   return (
     <div>
-      hme
+      <h1 className='text-center text-red-700'>home</h1>
     </div>
   )
 }
