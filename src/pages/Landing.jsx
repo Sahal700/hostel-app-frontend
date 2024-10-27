@@ -15,6 +15,7 @@ function Landing() {
     </div>
         <div className=' p-3'><img src="https://img.freepik.com/premium-vector/hostel-building-flat-isolated-colorful-illustration-cartoon-geometric-style-white-background_178650-4796.jpg?" alt="" className='w-5/6' /></div>
       </div>
+      
     </>
   )
 }
