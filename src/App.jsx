@@ -7,8 +7,9 @@ import Home from './pages/Home'
 import People from './pages/People'
 import Room from './pages/Room'
 
-function App() {
 
+
+function App() {
   return (
     <>
      <Header/>

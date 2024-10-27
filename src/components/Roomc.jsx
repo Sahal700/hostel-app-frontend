@@ -1,35 +1,25 @@
-import React from 'react'
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-
+import React from 'react';
+import Person from './Person';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBed } from '@fortawesome/free-solid-svg-icons';
 
 function Roomc() {
-  const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-  const f=false
+ 
   return (
     <>
-    <div className='border border-black p-3 mt-3'>
-     
-      <div className='flex items-center'>
-        <div className='flex items-center'>
-          <img src="https://www.seekpng.com/png/detail/966-9665493_my-profile-icon-blank-profile-image-circle.png" className='rounded-[50%] w-[50px] me-2' alt="" />
-          <span>user 1</span>
-        </div>
-        <div className='ms-auto'>
-        <FormControlLabel control={<Checkbox {...label} defaultChecked={f} onChange={(e)=>{console.log(e.target.checked)}} color="success" />} label="payment" />
+      <div className='bg-[#92ddfd62] p-5 rounded'>
+          <h4 className='text-3xl text-center'>room no: <span className='font-semibold'>1</span></h4>
+          <p className='text-center mt-3'>
+            <FontAwesomeIcon className='text-2xl me-3' icon={faBed} />
+            <span className='text-2xl'>: 4/5</span>
+          </p>
+        <div className='flex justify-between mt-4'>
+          <button className='bg-red-500 text-white p-1 px-2 rounded w-full me-3 '>Remove</button>
+          <button className='bg-teal-800 text-white p-1 px-2 rounded w-full'>View details</button>
         </div>
       </div>
-      <div></div>
-      <div></div>
-      <div></div>
-      
-    </div>
-
-
-
     </>
-
-  )
+  );
 }
 
-export default Roomc
+export default Roomc;
