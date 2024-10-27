@@ -1,8 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 function Person() {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
   const f=false
   return (
@@ -20,10 +26,26 @@ function Person() {
      </div>
      <div className='flex p-4 justify-between'>
       <button className='bg-red-500 text-white p-1 px-2 rounded '>Remove</button>
-      <button className='bg-teal-800 text-white p-1 px-2 rounded '>Change Room</button>
+      <button onClick={handleShow} className='bg-teal-800 text-white p-1 px-2 rounded '>Change Room</button>
      </div>
       </div>
       </div>
+      <Modal show={show} onHide={handleClose} className=''>
+        <Modal.Header closeButton>
+          <Modal.Title>Room</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <input type="text" placeholder='enter the room no:' />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   )
 }
