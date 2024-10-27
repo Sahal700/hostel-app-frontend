@@ -5,18 +5,56 @@ import Modal from 'react-bootstrap/Modal';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { addStudentApi } from '../services/allApi';
 
 
 
 function People() {
   const [show, setShow] = useState(false);
+  const [student,setStudent] = useState({
+    name:'',
+    mobile:'',
+    joinedDate:'',
+    room:''
+  });
+  console.log(student);
+  
+  const handleAdd = async()=>{
+    const {name , mobile , joinedDate , room}=student
+    if (!name || !mobile || !joinedDate || !room) {
+      alert("please fill the form")
+    }else{
+      const result = await addStudentApi(student)
+      console.log(result);
+      if(result.status>=200 && result.status<300){
+        alert('video uploaded successfully')
+        handleClose()
+      }else{
+        toast.warning('something went wrong')
+        handleClose()
+      }
 
-  const handleClose = () => setShow(false);
+    }
+  }
+
+  const handleClear = () =>{
+    setStudent({
+      name:'',
+      mobile:'',
+      joinedDate:'',
+      room:''
+    });
+  }
+  const handleClose = () => {
+    setShow(false);
+    handleClear()
+
+  }
   const handleShow = () => setShow(true);
   return (
     <div className='p-5'>
       <div className=' flex justify-between p-1 mb-4 pe-2'>
-        <button className='bg-green-400 text-white items-center p-2 px-5'>Add</button>
+        <button onClick={handleShow} className='bg-green-400 text-white items-center p-2 px-5'>Add</button>
         <p className='text-xl'>Total no of hostlers : <span className='font-bold'>100</span></p>
       </div>
      <table className='w-full '> 
@@ -46,21 +84,21 @@ function People() {
      </table>
      <Modal show={show} onHide={handleClose} className=''>
         <Modal.Header closeButton>
-          <Modal.Title>Room no: 1</Modal.Title>
+          <Modal.Title>Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <input type="text" className='form-control  ' placeholder='Name' />
-          <input type="text" className='form-control mt-3' placeholder='Mobile' />
-          <input type="date" className='form-control mt-3' placeholder='Date' />
-          <input type="text" className='form-control mt-3' placeholder='Room no' />
+          <input type="text" onChange={(e)=>{setStudent({...student,name : e.target.value})}} value={student.name} className='form-control  ' placeholder='Name' />
+          <input type="text" onChange={(e)=>{setStudent({...student,mobile : e.target.value})}} value={student.mobile} className='form-control mt-3' placeholder='Mobile' />
+          <input type="date" onChange={(e)=>{setStudent({...student,joinedDate : e.target.value})}} value={student.joinedDate} className='form-control mt-3' placeholder='Date' />
+          <input type="text" onChange={(e)=>{setStudent({...student,room : e.target.value})}} value={student.room} className='form-control mt-3' placeholder='Room no' />
           
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
+          <Button variant="secondary" onClick={handleClear}>
+            Clear
           </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
+          <Button variant="primary" onClick={handleAdd}>
+            Add
           </Button>
         </Modal.Footer>
       </Modal>
