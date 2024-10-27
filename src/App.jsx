@@ -6,9 +6,10 @@ import Landing from './pages/Landing'
 import Home from './pages/Home'
 import People from './pages/People'
 import Room from './pages/Room'
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+
 
 function App() {
-
   return (
     <>
      <Header/>
