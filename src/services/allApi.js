@@ -7,3 +7,7 @@ export const addStudentApi=async(reqBody)=>{
 export const getallStudentApi = async()=>{
   return await commonApi('GET',`${serverUrl}/student`)
 }
+export const deletstudentApi = async(id)=>{
+  return await commonApi('DELETE',`${serverUrl}/student/${id}`)
+}
+ 
