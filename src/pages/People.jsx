@@ -4,15 +4,17 @@ import Modal from 'react-bootstrap/Modal';
 import Checkbox from '@mui/material/Checkbox';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { addStudentApi, getallStudentApi,  } from '../services/allApi';
+import { addStudentApi, deletstudentApi, editstudentApi, getallStudentApi,  } from '../services/allApi';
 
 
 
 function People() {
   const [show, setShow] = useState(false);
-  const [checkboxStatus, setCheckboxStatus] = useState(false)
   const [allstudent,setallstudent] = useState([])
   const [addStatus,setAddStatus] = useState({})
+  const [deleteStatus,setdeleteStatus] = useState({})
+  const [edit,setEdit] = useState(false)
+  const [editstatus,seteditstatus] =useState({})
   const [student,setStudent] = useState({
     name:'',
     mobile:'',
@@ -30,7 +32,7 @@ function People() {
   }
   useEffect(()=>{
     getallstudent()
-  },[addStatus]) 
+  },[addStatus,deleteStatus,editstatus]) 
   console.log(allstudent);
   
   console.log(student);
@@ -47,7 +49,7 @@ function People() {
         handleClose()
         setAddStatus(result.data)
       }else{
-        toast.warning('something went wrong')
+      alert('something went wrong')
         handleClose()
       }
 
@@ -55,7 +57,6 @@ function People() {
   }
 
   const handleClear = () =>{
-    setCheckboxStatus(false)
     setStudent({
       name:'',
       mobile:'',
@@ -64,8 +65,22 @@ function People() {
       fee:'pending'
     });
   }
+ const handleremove = async(id)=>{
+  const result = await deletstudentApi(id)
+  if(result.status>=200 && result.status<300){
+    alert('Deleted Succesfully')
+    setdeleteStatus(result.data)
+  }
+  else{
+    alert('something went wrong')
+  }
+ }
+ const handleEdit =(item)=>{
+  handleShow()
+  setEdit(true)
+  setStudent(item)
+ }
   const handleCheckbox = (e)=>{
-    setCheckboxStatus(e.target.checked)
     if (e.target.checked) {
       setStudent({...student,fee : 'payed'})
     }else{
@@ -74,15 +89,37 @@ function People() {
   }
   const handleClose = () => {
     setShow(false);
+    setEdit(false);
     handleClear()
   }
   const handleShow = () => setShow(true);
+
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+
+
+  const handlechange=async()=>{
+    const {name , mobile , joinedDate , room}=student
+    if (!name || !mobile || !joinedDate || !room) {
+      alert("please fill the form")
+    }
+    else{
+      const result = await editstudentApi(student.id,student)
+      console.log(result);
+      if(result.status>=200 && result.status<300){
+        alert('Deleted Succesfully')
+        seteditstatus(result.data)
+        handleClose()
+      }
+      else{
+        alert('something went wrong')
+      }
+    }
+  }
   return (
     <div className='p-5'>
       <div className=' flex justify-between p-1 mb-4 pe-2'>
         <button onClick={handleShow} className='bg-green-400 text-white items-center p-2 px-5'>Add</button>
-        <p className='text-xl'>Total no of hostlers : <span className='font-bold'>100</span></p>
+        <p className='text-xl'>Total no of hostlers : <span className='font-bold'>{allstudent.length}</span></p>
       </div>
      <table className='w-full '> 
       <thead className='text-center border border-5 border-white bg-slate-500 text-white'>
@@ -103,8 +140,8 @@ function People() {
           <td className='p-3 border border-s-5 border-white'>{item?.fee=='payed' ? <span className='text-green-500'>Payed</span> : <span className='text-orange-500'>Pending</span>}</td>
           <td className='p-3 border border-s-5 border-white'>4</td>
           <td className='p-3 border border-s-5 border-white'>
-            <button className='bg-red-500  px-2 py-1 me-5 rounded-sm'>Remove <FontAwesomeIcon  icon={faTrash} /></button>
-           <button onClick={handleShow} className='bg-blue-500 px-2 py-1 rounded-sm'> Edit <FontAwesomeIcon icon={faPenToSquare} /></button>
+            <button onClick={()=>{handleremove(item?.id)}} className='bg-red-500  px-2 py-1 me-5 rounded-sm'>Remove <FontAwesomeIcon  icon={faTrash} /></button>
+           <button onClick={()=>{handleEdit(item)}} className='bg-blue-500 px-2 py-1 rounded-sm'> Edit <FontAwesomeIcon icon={faPenToSquare} /></button>
            </td>
         </tr>)
           }
@@ -118,7 +155,7 @@ function People() {
           <input type="text" onChange={(e)=>{setStudent({...student,name : e.target.value})}} value={student.name} className='form-control  ' placeholder='Name' />
           <input type="text" onChange={(e)=>{setStudent({...student,mobile : e.target.value})}} value={student.mobile} className='form-control mt-3' placeholder='Mobile' />
           <input type="date" onChange={(e)=>{setStudent({...student,joinedDate : e.target.value})}} value={student.joinedDate} className='form-control mt-3' placeholder='Date' />
-          <span className='ms-2'>Fee :<Checkbox {...label} defaultChecked={false} onChange={(e)=>{handleCheckbox(e)}} color="success" />{checkboxStatus ? <span className='text-green-500'>Payed</span> : <span className='text-orange-500'>Pending</span>}</span>
+          <span className='ms-2'>Fee :<Checkbox {...label} defaultChecked={student.fee=='payed'?true:false} checked={student.fee=='payed'?true:false} onChange={(e)=>{handleCheckbox(e)}} color="success" />{student.fee=='payed' ? <span className='text-green-500'>Payed</span> : <span className='text-orange-500'>Pending</span>}</span>
           <input type="text" onChange={(e)=>{setStudent({...student,room : e.target.value})}} value={student.room} className='form-control mt-3' placeholder='Room no' />
           
         </Modal.Body>
@@ -126,9 +163,11 @@ function People() {
           <Button variant="secondary" onClick={handleClear}>
             Clear
           </Button>
-          <Button variant="primary" onClick={handleAdd}>
+          {edit?<Button onClick={handlechange} variant="primary" >
+            Save Changes
+          </Button>:<Button variant="primary" onClick={handleAdd}>
             Add
-          </Button>
+          </Button>}
         </Modal.Footer>
       </Modal>
     </div>

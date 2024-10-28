@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBed } from '@fortawesome/free-solid-svg-icons';
+import { faBed, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Person from './Person';
@@ -15,14 +15,19 @@ function Roomc() {
   return (
     <>
       <div className='bg-[#92ddfd62] p-5 rounded'>
-          <h4 className='text-3xl text-center'>room no: <span className='font-semibold'>1</span></h4>
+          <div className='flex items-center  justify-between'>
+            <h4 className='text-3xl '>room no: <span className='font-semibold'>1</span></h4>
+            <FontAwesomeIcon className='text-red-500 '  icon={faTrash} />
+            </div>
           <p className='text-center mt-3'>
             <FontAwesomeIcon className='text-2xl me-3' icon={faBed} />
             <span className='text-2xl'>: 4/5</span>
           </p>
         <div className='flex justify-between mt-4'>
-          <button className='bg-red-500 text-white p-1 px-2 rounded w-full me-3 '>Remove</button>
-          <button onClick={handleShow} className='bg-teal-800 text-white p-1 px-2 rounded w-full' >View details</button>
+          
+          <button onClick={handleShow} className='bg-teal-800 text-white p-1 me-3  rounded w-full' >View details</button>
+          <button className='bg-green-500 text-white p-1  rounded w-full '>ADd</button>
+
         </div>
       </div>
 

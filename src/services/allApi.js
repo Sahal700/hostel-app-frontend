@@ -10,4 +10,7 @@ export const getallStudentApi = async()=>{
 export const deletstudentApi = async(id)=>{
   return await commonApi('DELETE',`${serverUrl}/student/${id}`)
 }
+export const editstudentApi =async(id,reqBody)=>{
+  return await commonApi('PUT',`${serverUrl}/student/${id}`,reqBody)
+}
  
