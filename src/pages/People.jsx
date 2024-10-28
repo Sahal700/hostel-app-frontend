@@ -11,7 +11,8 @@ import { addStudentApi, getallStudentApi,  } from '../services/allApi';
 function People() {
   const [show, setShow] = useState(false);
   const [checkboxStatus, setCheckboxStatus] = useState(false)
-  const[allstudent,setallstudent] = useState([])
+  const [allstudent,setallstudent] = useState([])
+  const [addStatus,setAddStatus] = useState({})
   const [student,setStudent] = useState({
     name:'',
     mobile:'',
@@ -29,7 +30,7 @@ function People() {
   }
   useEffect(()=>{
     getallstudent()
-},[]) 
+  },[addStatus]) 
   console.log(allstudent);
   
   console.log(student);
@@ -44,6 +45,7 @@ function People() {
       if(result.status>=200 && result.status<300){
         alert('video uploaded successfully')
         handleClose()
+        setAddStatus(result.data)
       }else{
         toast.warning('something went wrong')
         handleClose()
@@ -94,17 +96,18 @@ function People() {
         </tr>
       </thead>
       <tbody className='bg-slate-300 border border-5 border-white' >
-        <tr>
-          <td className='p-3 border border-s-5 border-white'><img src="" alt="" /> neeee</td>
-          <td className='p-3 border border-s-5 border-white'>8686868686</td>
-          <td className='p-3 border border-s-5 border-white'>10/9/9</td>
-          <td className='p-3 border border-s-5 border-white'>pending</td>
+        {allstudent?.length > 0 && allstudent?.map((item)=><tr>
+          <td className='p-3 border border-s-5 border-white'><img src="" alt="" />{item?.name}</td>
+          <td className='p-3 border border-s-5 border-white'>{item?.mobile}</td>
+          <td className='p-3 border border-s-5 border-white'>{item?.joinedDate}</td>
+          <td className='p-3 border border-s-5 border-white'>{item?.fee=='payed' ? <span className='text-green-500'>Payed</span> : <span className='text-orange-500'>Pending</span>}</td>
           <td className='p-3 border border-s-5 border-white'>4</td>
           <td className='p-3 border border-s-5 border-white'>
             <button className='bg-red-500  px-2 py-1 me-5 rounded-sm'>Remove <FontAwesomeIcon  icon={faTrash} /></button>
            <button onClick={handleShow} className='bg-blue-500 px-2 py-1 rounded-sm'> Edit <FontAwesomeIcon icon={faPenToSquare} /></button>
            </td>
-        </tr>
+        </tr>)
+          }
       </tbody>
      </table>
      <Modal show={show} onHide={handleClose} className=''>
