@@ -1,22 +1,36 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { addStudentApi } from '../services/allApi';
+import { addStudentApi, getallStudentApi,  } from '../services/allApi';
 
 
 
 function People() {
   const [show, setShow] = useState(false);
+  const[allstudent,setallstudent] = useState([])
   const [student,setStudent] = useState({
     name:'',
     mobile:'',
     joinedDate:'',
     room:''
   });
+  const getallstudent =async()=>{
+   const result = await getallStudentApi()
+   console.log(result);
+   
+   if(result.status>=200 && result.status<300){
+    setallstudent(result.data)
+   }
+  }
+  useEffect(()=>{
+    getallstudent()
+},[]) 
+  console.log(allstudent);
+  
   console.log(student);
   
   const handleAdd = async()=>{
