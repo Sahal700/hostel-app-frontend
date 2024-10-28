@@ -5,12 +5,15 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 function Person() {
+  
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
   const f=false
+
+  
   return (
     <>
     <div className='shadow bg-white rounded-md p-3 mt-3'>

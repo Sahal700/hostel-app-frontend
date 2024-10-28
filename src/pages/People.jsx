@@ -1,17 +1,17 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Checkbox from '@mui/material/Checkbox';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { addStudentApi } from '../services/allApi';
-import { green, orange } from '@mui/material/colors';
+import { addStudentApi, getallStudentApi,  } from '../services/allApi';
 
 
 
 function People() {
   const [show, setShow] = useState(false);
   const [checkboxStatus, setCheckboxStatus] = useState(false)
+  const[allstudent,setallstudent] = useState([])
   const [student,setStudent] = useState({
     name:'',
     mobile:'',
@@ -19,6 +19,19 @@ function People() {
     room:'',
     fee:'pending'
   });
+  const getallstudent =async()=>{
+   const result = await getallStudentApi()
+   console.log(result);
+   
+   if(result.status>=200 && result.status<300){
+    setallstudent(result.data)
+   }
+  }
+  useEffect(()=>{
+    getallstudent()
+},[]) 
+  console.log(allstudent);
+  
   console.log(student);
   
   const handleAdd = async()=>{
