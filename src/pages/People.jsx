@@ -1,21 +1,23 @@
 import React, { useState } from 'react'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-
-
+import Checkbox from '@mui/material/Checkbox';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { addStudentApi } from '../services/allApi';
+import { green, orange } from '@mui/material/colors';
 
 
 
 function People() {
   const [show, setShow] = useState(false);
+  const [checkboxStatus, setCheckboxStatus] = useState(false)
   const [student,setStudent] = useState({
     name:'',
     mobile:'',
     joinedDate:'',
-    room:''
+    room:'',
+    fee:'pending'
   });
   console.log(student);
   
@@ -38,19 +40,29 @@ function People() {
   }
 
   const handleClear = () =>{
+    setCheckboxStatus(false)
     setStudent({
       name:'',
       mobile:'',
       joinedDate:'',
-      room:''
+      room:'',
+      fee:'pending'
     });
+  }
+  const handleCheckbox = (e)=>{
+    setCheckboxStatus(e.target.checked)
+    if (e.target.checked) {
+      setStudent({...student,fee : 'payed'})
+    }else{
+      setStudent({...student,fee : 'pending'})
+    }
   }
   const handleClose = () => {
     setShow(false);
     handleClear()
-
   }
   const handleShow = () => setShow(true);
+  const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
   return (
     <div className='p-5'>
       <div className=' flex justify-between p-1 mb-4 pe-2'>
@@ -90,6 +102,7 @@ function People() {
           <input type="text" onChange={(e)=>{setStudent({...student,name : e.target.value})}} value={student.name} className='form-control  ' placeholder='Name' />
           <input type="text" onChange={(e)=>{setStudent({...student,mobile : e.target.value})}} value={student.mobile} className='form-control mt-3' placeholder='Mobile' />
           <input type="date" onChange={(e)=>{setStudent({...student,joinedDate : e.target.value})}} value={student.joinedDate} className='form-control mt-3' placeholder='Date' />
+          <span className='ms-2'>Fee :<Checkbox {...label} defaultChecked={false} onChange={(e)=>{handleCheckbox(e)}} color="success" />{checkboxStatus ? <span className='text-green-500'>Payed</span> : <span className='text-orange-500'>Pending</span>}</span>
           <input type="text" onChange={(e)=>{setStudent({...student,room : e.target.value})}} value={student.room} className='form-control mt-3' placeholder='Room no' />
           
         </Modal.Body>
