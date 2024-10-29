@@ -22,6 +22,9 @@ function People() {
     room:'',
     fee:'pending'
   });
+  const [isMobile,setIsMobile] = useState(true)
+  const [isRoom,setIsRoom] = useState(true)
+
   const getallstudent =async()=>{
    const result = await getallStudentApi()
    console.log(result);
@@ -36,6 +39,26 @@ function People() {
   console.log(allstudent);
   
   console.log(student);
+
+  const validate =(e)=>{
+    if(!!e.target.value.match('^[0-9]*$')){
+      if(e.target.name=='mobile'){
+        setStudent({...student,mobile : e.target.value})
+        setIsMobile(true)
+      }else if(e.target.name=='room'){
+        setStudent({...student,room : e.target.value})
+        setIsRoom(true)
+      }
+    }else{
+      if(e.target.name=='mobile'){
+        setStudent({...student,mobile : e.target.value})
+        setIsMobile(false)
+      }else if(e.target.name=='room'){
+        setStudent({...student,room : e.target.value})
+        setIsRoom(false)
+      }
+    }
+  }
   
   const handleAdd = async()=>{
     const {name , mobile , joinedDate , room}=student
@@ -64,6 +87,8 @@ function People() {
       room:'',
       fee:'pending'
     });
+    setIsMobile(true)
+    setIsRoom(true)
   }
  const handleremove = async(id)=>{
   const result = await deletstudentApi(id)
@@ -95,7 +120,6 @@ function People() {
   const handleShow = () => setShow(true);
 
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-
 
   const handlechange=async()=>{
     const {name , mobile , joinedDate , room}=student
@@ -152,20 +176,22 @@ function People() {
           <Modal.Title>Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <input type="text" onChange={(e)=>{setStudent({...student,name : e.target.value})}} value={student.name} className='form-control  ' placeholder='Name' />
-          <input type="text" onChange={(e)=>{setStudent({...student,mobile : e.target.value})}} value={student.mobile} className='form-control mt-3' placeholder='Mobile' />
-          <input type="date" onChange={(e)=>{setStudent({...student,joinedDate : e.target.value})}} value={student.joinedDate} className='form-control mt-3' placeholder='Date' />
+          <input type="text" name='name' onChange={(e)=>{setStudent({...student,name : e.target.value})}} value={student.name} className='form-control  ' placeholder='Name' />
+          <input type="text" name='mobile' onChange={(e)=>{validate(e)}} value={student.mobile} className='form-control mt-3' placeholder='Mobile' />
+          {!isMobile && <span className='text-red-500'>Invalid value</span>}
+          <input type="date" name='date' onChange={(e)=>{setStudent({...student,joinedDate : e.target.value})}} value={student.joinedDate} className='form-control mt-3' placeholder='joined date' />
+          
           <span className='ms-2'>Fee :<Checkbox {...label} defaultChecked={student.fee=='payed'?true:false} checked={student.fee=='payed'?true:false} onChange={(e)=>{handleCheckbox(e)}} color="success" />{student.fee=='payed' ? <span className='text-green-500'>Payed</span> : <span className='text-orange-500'>Pending</span>}</span>
-          <input type="text" onChange={(e)=>{setStudent({...student,room : e.target.value})}} value={student.room} className='form-control mt-3' placeholder='Room no' />
+          <input type="text" name='room' onChange={(e)=>{validate(e)}} value={student.room} className='form-control mt-3' placeholder='Room no' />{!isRoom && <span className='text-red-500'>Invalid value</span>}
           
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClear}>
             Clear
           </Button>
-          {edit?<Button onClick={handlechange} variant="primary" >
+          {edit?<Button disabled={isMobile && isRoom ? false:true} onClick={handlechange} variant="primary" >
             Save Changes
-          </Button>:<Button variant="primary" onClick={handleAdd}>
+          </Button>:<Button disabled={isMobile && isRoom ? false:true} variant="primary" onClick={handleAdd}>
             Add
           </Button>}
         </Modal.Footer>
