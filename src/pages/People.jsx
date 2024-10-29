@@ -4,7 +4,8 @@ import Modal from 'react-bootstrap/Modal';
 import Checkbox from '@mui/material/Checkbox';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { addStudentApi, deletstudentApi, editstudentApi, getallStudentApi,  } from '../services/allApi';
+import { addstdtoroomApi, addStudentApi, deletstudentApi, editstudentApi, getallStudentApi, getRoomApi,  } from '../services/allApi';
+import Select from 'react-select'
 
 
 
@@ -24,7 +25,8 @@ function People() {
   });
   const [isMobile,setIsMobile] = useState(true)
   const [isRoom,setIsRoom] = useState(true)
-
+  const [allroom, setallroom] = useState([])
+  const [option, setOption] = useState({})
   const getallstudent =async()=>{
    const result = await getallStudentApi()
    console.log(result);
@@ -35,27 +37,23 @@ function People() {
   }
   useEffect(()=>{
     getallstudent()
+    getroom()
   },[addStatus,deleteStatus,editstatus]) 
   console.log(allstudent);
   
   console.log(student);
+
 
   const validate =(e)=>{
     if(!!e.target.value.match('^[0-9]*$')){
       if(e.target.name=='mobile'){
         setStudent({...student,mobile : e.target.value})
         setIsMobile(true)
-      }else if(e.target.name=='room'){
-        setStudent({...student,room : e.target.value})
-        setIsRoom(true)
       }
     }else{
       if(e.target.name=='mobile'){
         setStudent({...student,mobile : e.target.value})
         setIsMobile(false)
-      }else if(e.target.name=='room'){
-        setStudent({...student,room : e.target.value})
-        setIsRoom(false)
       }
     }
   }
@@ -65,9 +63,23 @@ function People() {
     if (!name || !mobile || !joinedDate || !room) {
       alert("please fill the form")
     }else{
-      const result = await addStudentApi(student)
-      console.log(result);
-      if(result.status>=200 && result.status<300){
+      const selectedroom = allroom.find((item)=>item.roomNo==room)
+      console.log(selectedroom);
+      
+      if(selectedroom.length-selectedroom.capacity>0){
+        alert("Room is full")
+      }
+      else{
+        selectedroom.students.push(student)
+
+       const reqbody = selectedroom
+       console.log(reqbody);
+
+       const result1 = await addstdtoroomApi(selectedroom.id,reqbody)
+       
+        const result = await addStudentApi(student)
+
+      if(result.status>=200 && result.status<300 && result1.status>=200 && result1.status<300){
         alert('video uploaded successfully')
         handleClose()
         setAddStatus(result.data)
@@ -75,6 +87,8 @@ function People() {
       alert('something went wrong')
         handleClose()
       }
+      }
+      
 
     }
   }
@@ -89,7 +103,10 @@ function People() {
     });
     setIsMobile(true)
     setIsRoom(true)
+    setOption({})
   }
+  console.log(option);
+  
  const handleremove = async(id)=>{
   const result = await deletstudentApi(id)
   if(result.status>=200 && result.status<300){
@@ -104,6 +121,7 @@ function People() {
   handleShow()
   setEdit(true)
   setStudent(item)
+  setOption({ value: item.room ,label: item.room })
  }
   const handleCheckbox = (e)=>{
     if (e.target.checked) {
@@ -139,6 +157,25 @@ function People() {
       }
     }
   }
+  const getroom =async()=>{
+    const result = await getRoomApi()
+    console.log(result);
+    
+    if(result.status>=200 && result.status<300){
+      setallroom(result.data)
+     
+     
+      
+    } 
+   }
+   console.log(allroom);
+   const options = allroom?.length>0 ? allroom.map((item)=>({ value: item.roomNo, label: item.roomNo })) : ({})
+  const selectChange =(option)=>{
+    setOption(option)
+    setStudent({...student,room : option.value})
+  }
+   
+
   return (
     <div className='p-5'>
       <div className=' flex justify-between p-1 mb-4 pe-2'>
@@ -162,7 +199,7 @@ function People() {
           <td className='p-3 border border-s-5 border-white'>{item?.mobile}</td>
           <td className='p-3 border border-s-5 border-white'>{item?.joinedDate}</td>
           <td className='p-3 border border-s-5 border-white'>{item?.fee=='payed' ? <span className='text-green-500'>Payed</span> : <span className='text-orange-500'>Pending</span>}</td>
-          <td className='p-3 border border-s-5 border-white'>4</td>
+          <td className='p-3 border border-s-5 border-white'>{item?.room}</td>
           <td className='p-3 border border-s-5 border-white'>
             <button onClick={()=>{handleremove(item?.id)}} className='bg-red-500  px-2 py-1 me-5 rounded-sm'>Remove <FontAwesomeIcon  icon={faTrash} /></button>
            <button onClick={()=>{handleEdit(item)}} className='bg-blue-500 px-2 py-1 rounded-sm'> Edit <FontAwesomeIcon icon={faPenToSquare} /></button>
@@ -182,8 +219,7 @@ function People() {
           <input type="date" name='date' onChange={(e)=>{setStudent({...student,joinedDate : e.target.value})}} value={student.joinedDate} className='form-control mt-3' placeholder='joined date' />
           
           <span className='ms-2'>Fee :<Checkbox {...label} defaultChecked={student.fee=='payed'?true:false} checked={student.fee=='payed'?true:false} onChange={(e)=>{handleCheckbox(e)}} color="success" />{student.fee=='payed' ? <span className='text-green-500'>Payed</span> : <span className='text-orange-500'>Pending</span>}</span>
-          <input type="text" name='room' onChange={(e)=>{validate(e)}} value={student.room} className='form-control mt-3' placeholder='Room no' />{!isRoom && <span className='text-red-500'>Invalid value</span>}
-          
+          <Select options={options} value={option} placeholder={'Room no'} onChange={selectChange}/>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClear}>

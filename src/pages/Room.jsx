@@ -1,11 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Roomc from '../components/Roomc'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { addRoomApi, getRoomApi } from '../services/allApi';
+
 
 
 function Room() {
   const [show, setShow] = useState(false);
+  const [addroomstatus,setaddroomstatus] = useState([])
+  const [allroom, setallroom] = useState([])
   const [isRoom, setIsRoom]=useState(true)
   const [isCapacity, setIscapacity]=useState(true)
   const [room, setRoom] = useState({
@@ -20,6 +24,8 @@ function Room() {
       capacity:'',
       students:[]
     })
+    setIsRoom(true)
+    setIscapacity(true)
   }
   const handleClose = () => {
     setShow(false);
@@ -45,25 +51,60 @@ function Room() {
     }
   }
   const handleShow = () => setShow(true);
+
+  const handleAdd = async()=>{
+    const {roomNo , capacity }= room
+    if (!capacity || !roomNo) {
+      alert("please fill the form")
+    }
+    else{
+      if(allroom.some((item)=>item.roomNo==roomNo)){
+        alert('room already exist')
+      }else{
+        const result = await addRoomApi(room)
+      if(result.status>=200 && result.status<300){
+        alert('Room added successfully')
+        handleClose()
+        setaddroomstatus(result.data)
+      }else{
+      alert('something went wrong')
+        handleClose()
+      }
+      }
+      
+    }
+  }
+
+ const getroom =async()=>{
+  const result = await getRoomApi()
+  console.log(result);
+  
+  if(result.status>=200 && result.status<300){
+    setallroom(result.data)
+    
+   
+    
+  } 
+ }
+ console.log(allroom);
+ useEffect(()=>{
+  getroom()
+},[addroomstatus]) 
+
   return (
    < >
      <div className='flex justify-between p-5  pe-5'>
         <button onClick={handleShow} className='bg-green-400 text-white items-center p-2 px-5'>Add</button>
-        <p className='text-xl'>Total no of Room : <span className='font-bold'>100</span></p>
+        <p className='text-xl'>Total no of Room : <span className='font-bold'>{allroom.length}</span></p>
       </div>
       <div className='md:grid gap-4 grid-cols-[repeat(4,1fr)] py-10 px-3'>
-        <div className='md:mt-0 mt-2'>
-          <Roomc/>
+        {allroom.length>0 && 
+        allroom.map((item)=>(
+          <div className='md:mt-0 mt-2'>
+          <Roomc room={item}/>
         </div>
-        <div className='md:mt-0 mt-2'>
-          <Roomc/>
-        </div>
-        <div className='md:mt-0 mt-2'>
-          <Roomc/>
-        </div>
-        <div className='md:mt-0 mt-2'>
-          <Roomc/>
-        </div>
+        ))}
+        
     </div>
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -79,11 +120,13 @@ function Room() {
         <Button variant="secondary" onClick={handleClear}>
           Clear
         </Button>
-        <Button disabled={isCapacity && isRoom ? false : true} variant="primary" onClick={handleClose}>
+        <Button disabled={isCapacity && isRoom ? false : true} variant="primary" onClick={handleAdd}>
           Add
         </Button>
       </Modal.Footer>
     </Modal>
+
+
    </>
   )
 }
