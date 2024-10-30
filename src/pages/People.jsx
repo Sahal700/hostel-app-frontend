@@ -15,6 +15,7 @@ function People() {
   const [addStatus,setAddStatus] = useState({})
   const [deleteStatus,setdeleteStatus] = useState({})
   const [edit,setEdit] = useState(false)
+  const [oldroom,setOldroom] = useState('')
   const [editstatus,seteditstatus] =useState({})
   const [student,setStudent] = useState({
     name:'',
@@ -24,7 +25,6 @@ function People() {
     fee:'pending'
   });
   const [isMobile,setIsMobile] = useState(true)
-  const [isRoom,setIsRoom] = useState(true)
   const [allroom, setallroom] = useState([])
   const [option, setOption] = useState({})
   const getallstudent =async()=>{
@@ -66,30 +66,30 @@ function People() {
       const selectedroom = allroom.find((item)=>item.roomNo==room)
       console.log(selectedroom);
       
-      if(selectedroom.length-selectedroom.capacity>0){
+      if(selectedroom.capacity-selectedroom.students.length>0){
+        const stdId = allstudent[allstudent?.length-1].id+1
+
+        selectedroom.students.push({...student,id:stdId})
+        
+        
+        const reqbody = selectedroom
+        console.log(reqbody);
+
+        const result1 = await addstdtoroomApi(selectedroom.id,reqbody)
+        
+          const result = await addStudentApi(student)
+
+        if(result.status>=200 && result.status<300 && result1.status>=200 && result1.status<300){
+          alert('video uploaded successfully')
+          handleClose()
+          setAddStatus(result.data)
+        }else{
+          alert('something went wrong')
+          handleClose()
+        }
+      }else{
         alert("Room is full")
       }
-      else{
-        selectedroom.students.push(student)
-
-       const reqbody = selectedroom
-       console.log(reqbody);
-
-       const result1 = await addstdtoroomApi(selectedroom.id,reqbody)
-       
-        const result = await addStudentApi(student)
-
-      if(result.status>=200 && result.status<300 && result1.status>=200 && result1.status<300){
-        alert('video uploaded successfully')
-        handleClose()
-        setAddStatus(result.data)
-      }else{
-      alert('something went wrong')
-        handleClose()
-      }
-      }
-      
-
     }
   }
 
@@ -102,7 +102,6 @@ function People() {
       fee:'pending'
     });
     setIsMobile(true)
-    setIsRoom(true)
     setOption({})
   }
   console.log(option);
@@ -121,6 +120,7 @@ function People() {
   handleShow()
   setEdit(true)
   setStudent(item)
+  setOldroom(item.room)
   setOption({ value: item.room ,label: item.room })
  }
   const handleCheckbox = (e)=>{
@@ -145,16 +145,20 @@ function People() {
       alert("please fill the form")
     }
     else{
-      const result = await editstudentApi(student.id,student)
-      console.log(result);
-      if(result.status>=200 && result.status<300){
-        alert('Deleted Succesfully')
-        seteditstatus(result.data)
-        handleClose()
-      }
-      else{
-        alert('something went wrong')
-      }
+      
+      const selectedroom = allroom?.find((item)=>item.roomNo==room)
+      console.log(selectedroom);
+      // const result = await editstudentApi(student.id,student)
+      // console.log(result);
+      // if(result.status>=200 && result.status<300){
+      //   alert('Deleted Succesfully')
+      //   seteditstatus(result.data)
+      //   handleClose()
+      // }
+      // else{
+      //   alert('something went wrong')
+          // handleClose()
+      // }
     }
   }
   const getroom =async()=>{
@@ -225,9 +229,9 @@ function People() {
           <Button variant="secondary" onClick={handleClear}>
             Clear
           </Button>
-          {edit?<Button disabled={isMobile && isRoom ? false:true} onClick={handlechange} variant="primary" >
+          {edit?<Button disabled={isMobile ? false:true} onClick={handlechange} variant="primary" >
             Save Changes
-          </Button>:<Button disabled={isMobile && isRoom ? false:true} variant="primary" onClick={handleAdd}>
+          </Button>:<Button disabled={isMobile ? false:true} variant="primary" onClick={handleAdd}>
             Add
           </Button>}
         </Modal.Footer>
