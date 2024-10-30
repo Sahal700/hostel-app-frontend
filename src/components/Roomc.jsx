@@ -17,6 +17,10 @@ function Roomc({room}) {
 
   const handleClose2 = () => setShow2(false);
   const handleShow2 = () => setShow2(true);
+
+ const handlesavechanges =()=>{
+
+ }
   return (
     <>
       <div className='bg-[#92ddfd62] p-5 rounded'>
@@ -36,26 +40,30 @@ function Roomc({room}) {
         </div>
       </div>
 
-      <Modal show={show} onHide={handleClose2} className=''>
+      <Modal show={show} onHide={handleClose} className=''>
         <Modal.Header closeButton>
           <Modal.Title>Room no: 1</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Person/>
-          <Person/>
-          <Person/>
-          <Person/>
-          <Person/>
+          {room.students.length>0 ?
+           room.students.map((item)=>(
+            <Person student={item}/>
+           ))
+          :
+          <h4>room is empty</h4> 
+          }
+          
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button>
+          
         </Modal.Footer>
       </Modal>
+
+
+
 
       <Modal show={show2} onHide={handleClose2}>
         <Modal.Header closeButton>
