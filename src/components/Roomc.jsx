@@ -7,7 +7,7 @@ import Person from './Person';
 
 
 
-function Roomc({room}) {
+function Roomc({room,allroom,setChageRoomStatus}) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -42,12 +42,12 @@ function Roomc({room}) {
 
       <Modal show={show} onHide={handleClose} className=''>
         <Modal.Header closeButton>
-          <Modal.Title>Room no: 1</Modal.Title>
+          <Modal.Title>Room no: {room.roomNo}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {room.students.length>0 ?
            room.students.map((item)=>(
-            <Person student={item} room={room}/>
+            <Person student={item} allroom={allroom} room={room} setChageRoomStatus={setChageRoomStatus}/>
            ))
           :
           <h4>room is empty</h4> 
