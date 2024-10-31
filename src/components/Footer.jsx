@@ -1,6 +1,7 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFacebook, faInstagram, faXTwitter } from '@fortawesome/free-brands-svg-icons'
+import { Link } from 'react-router-dom'
 
 function Footer() {
   return (
@@ -16,10 +17,10 @@ function Footer() {
             <div className=' flex md:justify-center p-5'>
                <div>
                     <h1 className='text-2xl text-white '>Links</h1>
-                    <p className=' mt-3'>Landing</p>
-                    <p className=' mt-3'>Home</p>
-                    <p className=' mt-3'>people</p>
-                    <p className=' mt-3'>Room</p>
+                    <Link to={'/'} className='text-dark no-underline'><p className=' mt-3'>Landing</p></Link>
+                    <Link to={'/home'} className='text-dark no-underline'><p className=' mt-3'>Home</p></Link>
+                    <Link to={'/people'} className='text-dark no-underline'><p className=' mt-3'>Hostlers</p></Link>
+                    <Link to={'/room'} className='text-dark no-underline'><p className=' mt-3'>Rooms</p></Link>
                </div>
             </div>
             <div className='flex md:justify-center p-5'>

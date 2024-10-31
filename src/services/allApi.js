@@ -22,3 +22,6 @@ export const getRoomApi = async()=>{
 export const addstdtoroomApi =async(id,reqBody)=>{
   return await commonApi('PUT',`${serverUrl}/rooms/${id}`,reqBody)
 }
+export const deletRoomApi = async(id)=>{
+  return await commonApi('DELETE',`${serverUrl}/rooms/${id}`)
+}
