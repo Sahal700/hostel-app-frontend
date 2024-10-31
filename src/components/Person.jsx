@@ -4,13 +4,15 @@ import React, { useState } from 'react'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Checkbox from '@mui/material/Checkbox';
-import { editstudentApi } from '../services/allApi';
+import { addstdtoroomApi, editstudentApi } from '../services/allApi';
+import Select from 'react-select'
 
-function Person({student,room}) {
+function Person({student,room,allroom,setChageRoomStatus}) {
   
   const [show, setShow] = useState(false);
   const [payment,setpayment] =useState(student.fee)
-   console.log(payment);
+  const [option,setOption]= useState({ value: student.room ,label: student.room })
+  //  console.log(payment);
    
   const handleClose = () => {
     setShow(false);}
@@ -41,8 +43,53 @@ function Person({student,room}) {
   
  }
 
+ const options = allroom?.length>0 ? allroom.map((item)=>({ value: item.roomNo, label: item.roomNo })) : ({})
 
-  
+ const selectChange =(option)=>{
+  setOption(option)
+}
+const handleRoomChange = async()=>{
+  if(room.roomNo==option.value){
+    alert('already in that room')
+  }else{
+    const selectedroom = allroom?.find((item)=>item.roomNo==option.value)
+      console.log(selectedroom);
+    if(selectedroom.capacity-selectedroom.students.length>0){
+
+
+      const oldrooms = allroom?.find((item)=>item.roomNo==room.roomNo)
+      const stdindex = oldrooms.students.findIndex((item)=>item.id==student.id)
+      oldrooms.students.splice(stdindex,1)
+      const result1 = await addstdtoroomApi(oldrooms.id,oldrooms)
+
+
+      selectedroom.students.push(student)
+      
+      
+      const reqbody = selectedroom
+      console.log(reqbody);
+
+      const result2 = await addstdtoroomApi(selectedroom.id,reqbody)
+
+
+      const result = await editstudentApi(student.id,{...student,room:option.value})
+    console.log(result);
+    if(result.status>=200 && result.status<300 && result1.status>=200 && result1.status<300 && result2.status>=200 && result2.status<300){
+      alert('room changed Succesfully')
+      setChageRoomStatus(result.data)
+      handleClose()
+    }
+    else{
+      alert('something went wrong')
+        handleClose()
+    }
+    }else{
+      alert('room is full')
+    }
+  }
+}
+
+
   return (
     <>
     <div className='shadow bg-white rounded-md p-3 mt-3'>
@@ -57,26 +104,26 @@ function Person({student,room}) {
           </div>
      </div>
      <div className='flex p-4 justify-between'>
-      <button className='bg-red-500 text-white p-1 px-2 rounded '>Remove</button>
+      
+      <button onClick={handleShow} className='bg-teal-800 text-white p-1 px-2 rounded '>Change Room</button>
       <button onClick={handlesavechange} className='bg-blue-600 text-white p-1 px-2 rounded '>
             Save Changes
-          </button>
-      <button onClick={handleShow} className='bg-teal-800 text-white p-1 px-2 rounded '>Change Room</button>
+      </button>
      </div>
       </div>
       </div>
       <Modal show={show} onHide={handleClose} className=''>
         <Modal.Header closeButton>
-          <Modal.Title>Room</Modal.Title>
+          <Modal.Title>Change Room</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <input type="text" placeholder='enter the room no:' />
+        <Select options={options} value={option} placeholder={'Room no'} onChange={selectChange}/>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button  variant="primary" onClick={handleClose}>
+          <Button  variant="primary" onClick={handleRoomChange}>
             Save Changes
           </Button>
         </Modal.Footer>

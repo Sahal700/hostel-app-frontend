@@ -12,6 +12,7 @@ function Room() {
   const [allroom, setallroom] = useState([])
   const [isRoom, setIsRoom]=useState(true)
   const [isCapacity, setIscapacity]=useState(true)
+  const [changeRoomStatus,setChageRoomStatus]=useState({})
   const [room, setRoom] = useState({
     roomNo:'',
     capacity:'',
@@ -89,7 +90,7 @@ function Room() {
  console.log(allroom);
  useEffect(()=>{
   getroom()
-},[addroomstatus]) 
+},[addroomstatus,changeRoomStatus]) 
 
   return (
    < >
@@ -101,7 +102,7 @@ function Room() {
         {allroom.length>0 && 
         allroom.map((item)=>(
           <div className='md:mt-0 mt-2'>
-          <Roomc room={item}/>
+          <Roomc room={item} allroom={allroom} setChageRoomStatus={setChageRoomStatus}/>
         </div>
         ))}
         
