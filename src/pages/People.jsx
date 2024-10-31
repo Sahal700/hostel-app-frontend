@@ -86,7 +86,7 @@ function People() {
           const result = await addStudentApi(student)
 
         if(result.status>=200 && result.status<300 && result1.status>=200 && result1.status<300){
-          alert('video uploaded successfully')
+          alert('student added successfully')
           handleClose()
           setAddStatus(result.data)
         }else{
@@ -127,7 +127,7 @@ function People() {
   const result1 = await addstdtoroomApi(selectedroom.id,selectedroom)
   console.log(result1)
   const result = await deletstudentApi(student.id)
-  if(result.status>=200 && result.status<300){
+  if(result.status>=200 && result.status<300 && result1.status>=200 && result1.status<300){
     alert('Deleted Succesfully')
     setdeleteStatus(result.data)
   }
@@ -187,8 +187,8 @@ function People() {
 
         const result = await editstudentApi(student.id,student)
       console.log(result);
-      if(result.status>=200 && result.status<300){
-        alert('Deleted Succesfully')
+      if(result.status>=200 && result.status<300 && result1.status>=200 && result1.status<300 && result2.status>=200 && result2.status<300){
+        alert('Edited Succesfully')
         seteditstatus(result.data)
         handleClose()
       }
