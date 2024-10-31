@@ -271,8 +271,8 @@ function People() {
               <td className='p-3 border border-s-5 border-white'>{item?.fee=='payed' ? <span className='text-green-500'>Payed</span> : <span className='text-orange-500'>Pending</span>}</td>
               <td className='p-3 border border-s-5 border-white'>{item?.room}</td>
               <td className='p-3 border border-s-5 border-white'>
-                <button onClick={()=>{handleremove(item)}} className='bg-red-500  px-2 py-1 me-5 rounded-sm'>Remove <FontAwesomeIcon  icon={faTrash} /></button>
-               <button onClick={()=>{handleEdit(item)}} className='bg-blue-500 px-2 py-1 rounded-sm'> Edit <FontAwesomeIcon icon={faPenToSquare} /></button>
+                <button onClick={()=>{handleremove(item)}} className='bg-red-500  px-2 py-1 me-5 rounded-sm'><span className='hidden md:inline'>Remove </span><FontAwesomeIcon  icon={faTrash} /></button>
+               <button onClick={()=>{handleEdit(item)}} className='bg-blue-500 px-2 py-1 rounded-sm mt-2 md:mt-0'> <span className='hidden md:inline'>Edit</span> <FontAwesomeIcon icon={faPenToSquare} /></button>
                </td>
             </tr>)
               }
