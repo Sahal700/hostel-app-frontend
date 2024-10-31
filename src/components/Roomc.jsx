@@ -4,6 +4,7 @@ import { faBed, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Person from './Person';
+import { deletRoomApi, editstudentApi } from '../services/allApi';
 
 
 
@@ -18,15 +19,27 @@ function Roomc({room,allroom,setChageRoomStatus}) {
   const handleClose2 = () => setShow2(false);
   const handleShow2 = () => setShow2(true);
 
- const handlesavechanges =()=>{
 
- }
+  const deleteroom = async () => {
+    for (const item of room.students) {
+      console.log(item.id);
+      
+    const result =  await editstudentApi(item.id, {...item, room:""});
+    console.log(result);
+    
+    }
+    const result =await deletRoomApi(room.id)
+    if(result.status>=200 && result.status<300){
+      setChageRoomStatus(result.data)
+    }
+  };
+  
   return (
     <>
       <div className='bg-[#92ddfd62] p-5 rounded'>
-          <div className='flex items-center  justify-between'>
+          <div className='text-center'>
             <h4 className='text-3xl '>room no: <span className='font-semibold'>{room.roomNo}</span></h4>
-            <FontAwesomeIcon className='text-red-500 '  icon={faTrash} />
+            
             </div>
           <p className='text-center mt-3'>
             <FontAwesomeIcon className='text-2xl me-3' icon={faBed} />
@@ -35,7 +48,7 @@ function Roomc({room,allroom,setChageRoomStatus}) {
         <div className='flex justify-between mt-4'>
           
           <button onClick={handleShow} className='bg-teal-800 text-white p-1 me-3  rounded w-full' >View details</button>
-          <button onClick={handleShow2} className='bg-green-500 text-white p-1  rounded w-full '>ADd</button>
+          <button onClick={deleteroom} className='bg-red-500 text-white p-1  rounded w-full '>Delete Room</button>
 
         </div>
       </div>

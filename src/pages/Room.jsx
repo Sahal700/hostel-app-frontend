@@ -3,6 +3,12 @@ import Roomc from '../components/Roomc'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { addRoomApi, getRoomApi } from '../services/allApi';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
 
 
 
@@ -56,19 +62,19 @@ function Room() {
   const handleAdd = async()=>{
     const {roomNo , capacity }= room
     if (!capacity || !roomNo) {
-      alert("please fill the form")
+      toast.info("please fill the form")
     }
     else{
       if(allroom.some((item)=>item.roomNo==roomNo)){
-        alert('room already exist')
+        toast.warning('room already exist')
       }else{
         const result = await addRoomApi(room)
       if(result.status>=200 && result.status<300){
-        alert('Room added successfully')
+        toast.success('Room added successfully')
         handleClose()
         setaddroomstatus(result.data)
       }else{
-      alert('something went wrong')
+      toast.error('something went wrong')
         handleClose()
       }
       }
@@ -94,11 +100,18 @@ function Room() {
 
   return (
    < >
-     <div className='flex justify-between p-5  pe-5'>
-        <button onClick={handleShow} className='bg-green-400 text-white items-center p-2 px-5'>Add</button>
-        <p className='text-xl'>Total no of Room : <span className='font-bold'>{allroom.length}</span></p>
+   <h1 className=' text-center mt-5'>Rooms</h1>
+     <div className=' md:flex  justify-between items-cente p-4 px-md-5'>
+        <div >
+          
+          <p className='text-xl py-md-2'>Total no of Room : <span className='font-bold'>{allroom.length}</span></p>
+          <button onClick={handleShow} className='bg-green-400 text-white items-center p-2 px-5'>Add</button>
+        </div>
+        <div className='flex items-center'>
+         <Link to={'/home'}> <button className='btn px-0  fs-5 text-success'> <FontAwesomeIcon icon={faArrowLeft} className='me-2' />  Back Home </button></Link>
+        </div>
       </div>
-      <div className='md:grid gap-4 grid-cols-[repeat(4,1fr)] py-10 px-3'>
+      <div className='md:grid gap-4 grid-cols-[repeat(4,1fr)] md:py-8 pb-5 px-md-5 px-3'>
         {allroom.length>0 && 
         allroom.map((item)=>(
           <div className='md:mt-0 mt-2'>
@@ -127,7 +140,10 @@ function Room() {
       </Modal.Footer>
     </Modal>
 
-
+    <ToastContainer 
+      position="top-center"
+      autoClose={2000} 
+      theme='colored'/>
    </>
   )
 }

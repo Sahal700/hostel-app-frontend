@@ -7,6 +7,8 @@ import Checkbox from '@mui/material/Checkbox';
 import { addstdtoroomApi, editstudentApi } from '../services/allApi';
 import Select from 'react-select'
 
+import { toast } from 'react-toastify';
+
 function Person({student,room,allroom,setChageRoomStatus}) {
   
   const [show, setShow] = useState(false);
@@ -40,6 +42,9 @@ function Person({student,room,allroom,setChageRoomStatus}) {
   console.log(result2);
   
   console.log(result);
+  if(result.status>=200 && result.status<300){
+    toast('edited succesfully')
+  }
   
  }
 
@@ -50,7 +55,7 @@ function Person({student,room,allroom,setChageRoomStatus}) {
 }
 const handleRoomChange = async()=>{
   if(room.roomNo==option.value){
-    alert('already in that room')
+    toast.warning('already in that room')
   }else{
     const selectedroom = allroom?.find((item)=>item.roomNo==option.value)
       console.log(selectedroom);
@@ -75,16 +80,16 @@ const handleRoomChange = async()=>{
       const result = await editstudentApi(student.id,{...student,room:option.value})
     console.log(result);
     if(result.status>=200 && result.status<300 && result1.status>=200 && result1.status<300 && result2.status>=200 && result2.status<300){
-      alert('room changed Succesfully')
+      toast.success('room changed Succesfully')
       setChageRoomStatus(result.data)
       handleClose()
     }
     else{
-      alert('something went wrong')
+      toast.error('something went wrong')
         handleClose()
     }
     }else{
-      alert('room is full')
+      toast.warning('room is full')
     }
   }
 }
