@@ -47,7 +47,7 @@ function Roomc({room}) {
         <Modal.Body>
           {room.students.length>0 ?
            room.students.map((item)=>(
-            <Person student={item}/>
+            <Person student={item} room={room}/>
            ))
           :
           <h4>room is empty</h4> 
