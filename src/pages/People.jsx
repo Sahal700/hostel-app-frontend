@@ -16,6 +16,7 @@ function People() {
   const [deleteStatus,setdeleteStatus] = useState({})
   const [edit,setEdit] = useState(false)
   const [oldroom,setOldroom] = useState('')
+  const [stdId,setStdId] =useState('')
   const [editstatus,seteditstatus] =useState({})
   const [student,setStudent] = useState({
     name:'',
@@ -67,7 +68,12 @@ function People() {
       console.log(selectedroom);
       
       if(selectedroom.capacity-selectedroom.students.length>0){
-        const stdId = allstudent[allstudent?.length-1].id+1
+        
+        let stdId=1
+
+        if (allstudent.length>0) {
+          stdId = allstudent[allstudent?.length-1].id+1
+        }
 
         selectedroom.students.push({...student,id:stdId})
         
@@ -80,7 +86,7 @@ function People() {
           const result = await addStudentApi(student)
 
         if(result.status>=200 && result.status<300 && result1.status>=200 && result1.status<300){
-          alert('video uploaded successfully')
+          alert('student added successfully')
           handleClose()
           setAddStatus(result.data)
         }else{
@@ -103,12 +109,25 @@ function People() {
     });
     setIsMobile(true)
     setOption({})
+    setOldroom('')
+    setStdId('')
   }
-  console.log(option);
+  // console.log(option);
   
- const handleremove = async(id)=>{
-  const result = await deletstudentApi(id)
-  if(result.status>=200 && result.status<300){
+ const handleremove = async(student)=>{
+
+  console.log(student.id);
+  
+  const selectedroom = allroom?.find((item)=>item.roomNo==student.room)
+  console.log(selectedroom);
+  const stdindex = selectedroom.students.findIndex((item)=>item.id==student.id)
+  console.log(stdindex);
+  
+  selectedroom.students.splice(stdindex,1)
+  const result1 = await addstdtoroomApi(selectedroom.id,selectedroom)
+  console.log(result1)
+  const result = await deletstudentApi(student.id)
+  if(result.status>=200 && result.status<300 && result1.status>=200 && result1.status<300){
     alert('Deleted Succesfully')
     setdeleteStatus(result.data)
   }
@@ -121,6 +140,7 @@ function People() {
   setEdit(true)
   setStudent(item)
   setOldroom(item.room)
+  setStdId(item.id)
   setOption({ value: item.room ,label: item.room })
  }
   const handleCheckbox = (e)=>{
@@ -145,25 +165,47 @@ function People() {
       alert("please fill the form")
     }
     else{
-      
       const selectedroom = allroom?.find((item)=>item.roomNo==room)
       console.log(selectedroom);
-      // const result = await editstudentApi(student.id,student)
-      // console.log(result);
-      // if(result.status>=200 && result.status<300){
-      //   alert('Deleted Succesfully')
-      //   seteditstatus(result.data)
-      //   handleClose()
-      // }
-      // else{
-      //   alert('something went wrong')
-          // handleClose()
-      // }
+      if(selectedroom.capacity-selectedroom.students.length>0){
+
+
+        const oldrooms = allroom?.find((item)=>item.roomNo==oldroom)
+        const stdindex = oldrooms.students.findIndex((item)=>item.id==stdId)
+        oldrooms.students.splice(stdindex,1)
+        const result1 = await addstdtoroomApi(oldrooms.id,oldrooms)
+
+
+        selectedroom.students.push({...student,id:stdId})
+        
+        
+        const reqbody = selectedroom
+        console.log(reqbody);
+
+        const result2 = await addstdtoroomApi(selectedroom.id,reqbody)
+
+
+        const result = await editstudentApi(student.id,student)
+      console.log(result);
+      if(result.status>=200 && result.status<300 && result1.status>=200 && result1.status<300 && result2.status>=200 && result2.status<300){
+        alert('Edited Succesfully')
+        seteditstatus(result.data)
+        handleClose()
+      }
+      else{
+        alert('something went wrong')
+          handleClose()
+      }
+      }else{
+        alert('room is full')
+      }
+
+      
     }
   }
   const getroom =async()=>{
     const result = await getRoomApi()
-    console.log(result);
+    // console.log(result);
     
     if(result.status>=200 && result.status<300){
       setallroom(result.data)
@@ -205,7 +247,7 @@ function People() {
           <td className='p-3 border border-s-5 border-white'>{item?.fee=='payed' ? <span className='text-green-500'>Payed</span> : <span className='text-orange-500'>Pending</span>}</td>
           <td className='p-3 border border-s-5 border-white'>{item?.room}</td>
           <td className='p-3 border border-s-5 border-white'>
-            <button onClick={()=>{handleremove(item?.id)}} className='bg-red-500  px-2 py-1 me-5 rounded-sm'>Remove <FontAwesomeIcon  icon={faTrash} /></button>
+            <button onClick={()=>{handleremove(item)}} className='bg-red-500  px-2 py-1 me-5 rounded-sm'>Remove <FontAwesomeIcon  icon={faTrash} /></button>
            <button onClick={()=>{handleEdit(item)}} className='bg-blue-500 px-2 py-1 rounded-sm'> Edit <FontAwesomeIcon icon={faPenToSquare} /></button>
            </td>
         </tr>)
