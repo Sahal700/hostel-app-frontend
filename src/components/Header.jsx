@@ -1,6 +1,4 @@
 import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHotel } from '@fortawesome/free-solid-svg-icons'
 function Header() {
   return (
     <div className='md:p-4 py-4 flex md:ps-[100px] md:justify-start justify-center items-center bg-[#1c6bb0]'>
