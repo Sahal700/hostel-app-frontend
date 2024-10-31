@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBed, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faBed} from '@fortawesome/free-solid-svg-icons';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Person from './Person';
@@ -14,10 +14,6 @@ function Roomc({room,allroom,setChageRoomStatus}) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const [show2, setShow2] = useState(false);
-
-  const handleClose2 = () => setShow2(false);
-  const handleShow2 = () => setShow2(true);
 
 
   const deleteroom = async () => {
@@ -72,24 +68,6 @@ function Roomc({room,allroom,setChageRoomStatus}) {
             Close
           </Button>
           
-        </Modal.Footer>
-      </Modal>
-
-
-
-
-      <Modal show={show2} onHide={handleClose2}>
-        <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Woohoo, you are reading this text in a modal!</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose2}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleClose2}>
-            Save Changes
-          </Button>
         </Modal.Footer>
       </Modal>
     </>
