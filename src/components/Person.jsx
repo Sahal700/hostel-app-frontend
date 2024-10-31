@@ -6,7 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import Checkbox from '@mui/material/Checkbox';
 import { editstudentApi } from '../services/allApi';
 
-function Person({student}) {
+function Person({student,room}) {
   
   const [show, setShow] = useState(false);
   const [payment,setpayment] =useState(student.fee)
@@ -26,8 +26,21 @@ function Person({student}) {
     }
   }
  const handlesavechange =async()=>{
-  const result =  await editstudentApi()
+  const reqbody = {...student,fee:payment}
+  const result =  await editstudentApi(student.id,reqbody)
+
+  const selectedroom = room
+  const selectedstdindex = room.students.findIndex((item)=>item.id==student.id)
+  console.log(selectedstdindex);
+  
+  selectedroom.students.splice(selectedstdindex,1,{...student,fee:payment})
+  const result2 = await addstdtoroomApi(room.id,selectedroom)
+  console.log(result2);
+  
+  console.log(result);
+  
  }
+
 
   
   return (
